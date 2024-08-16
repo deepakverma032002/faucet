@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const ipMap = new Map<string, string>();
 export async function GET(req: NextRequest) {
-  const ipMap = new Map<string, string>();
-
-  let ip: string | null = "";
-  if (req.ip) {
-    ip = req.ip;
-  } else {
-    ip = req.headers.get("X-Forwarded-For");
-  }
-  console.log(req.ip);
+  ipMap.set(`localhost ${req.headers.get("user-agent")}`, "127.0.0.1");
+  console.log(ipMap);
 
   return NextResponse.json({ message: "Hello, Next.js!" });
 }
