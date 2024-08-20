@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn prisma:push && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:push": "npx prisma db push --schema src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@prisma/client": "^5.18.0",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
@@ -23,6 +25,7 @@
     "next": "14.2.5",
     "next-themes": "^0.3.0",
     "pino-pretty": "^11.2.2",
+    "prisma": "^5.18.0",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.5.2",

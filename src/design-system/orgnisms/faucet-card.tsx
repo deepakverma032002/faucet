@@ -69,7 +69,7 @@ export function FaucetCard() {
       const error = e as WriteContractsErrorType;
       toast({
         title: "Error",
-        description: error.message,
+        description: "Please try after some time",
         variant: "destructive",
       });
       console.error(error);

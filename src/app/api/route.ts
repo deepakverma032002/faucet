@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import moment from "moment";
-
-const ipMap = new Map<string, string>();
+import prisma from "@/prisma";
 
 const timeFormat = (time: string) => {
   const someday = moment(time);
@@ -24,30 +23,34 @@ const timeFormat = (time: string) => {
 };
 
 export async function POST(req: NextRequest) {
-  console.log(ipMap);
   try {
-    const item = ipMap.get(`${req.headers.get("X-Forwarded-For")}`);
+    const item1 = await prisma.iPTable.findFirst({
+      where: {
+        ip: `${req.headers.get("X-Forwarded-For")}`,
+      },
+    });
 
-    if (item && moment(item).isAfter(moment().toDate())) {
+    if (item1 && moment(item1.expireTime).isAfter(moment().toDate())) {
       return NextResponse.json(
-        { message: "Too many requests!", time: timeFormat(item) },
+        { message: "Too many requests!", time: timeFormat(item1.expireTime) },
         {
           status: 429,
         }
       );
     }
 
-    // remove expired items
-    ipMap.forEach((value, key) => {
-      if (moment(value).isBefore(moment().toDate())) {
-        ipMap.delete(key);
-      }
-    });
+    // ipMap.forEach((value, key) => {
+    //   if (moment(value).isBefore(moment().toDate())) {
+    //     ipMap.delete(key);
+    //   }
+    // });
 
-    ipMap.set(
-      `${req.headers.get("X-Forwarded-For")}`,
-      moment().add(1, "d").toDate().toISOString()
-    );
+    await prisma.iPTable.create({
+      data: {
+        ip: `${req.headers.get("X-Forwarded-For")}`,
+        expireTime: moment().add(1, "d").toDate().toISOString(),
+      },
+    });
 
     return NextResponse.json({ message: "Successfully done!" });
   } catch (error) {
