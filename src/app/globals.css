@@ -2,7 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  height: 100%;
+@layer base {
+  :root {
+    --background: rgba(250, 250, 250, 1);
+    --foreground: rgba(10, 25, 61, 1);
+    --card: rgba(255, 255, 255, 1);
+    --card-foreground: rgba(10, 25, 61, 1);
+    --popover: rgba(255, 255, 255, 1);
+    --popover-foreground: rgba(10, 25, 61, 1);
+    --primary: rgba(25, 42, 76, 1);
+    --primary-foreground: rgba(244, 247, 255, 1);
+    --secondary: rgba(240, 246, 253, 1);
+    --secondary-foreground: rgba(25, 42, 76, 1);
+    --muted: rgba(240, 246, 253, 1);
+    --muted-foreground: rgba(111, 119, 134, 1);
+    --accent: rgba(240, 246, 253, 1);
+    --accent-foreground: rgba(25, 42, 76, 1);
+    --destructive: rgba(255, 46, 46, 1);
+    --destructive-foreground: rgba(244, 247, 255, 1);
+    --border: rgba(223, 227, 232, 1);
+    --input: rgba(223, 227, 232, 1);
+    --ring: rgba(10, 25, 61, 1);
+    --radius: 0.5rem;
+    --chart-1: rgba(235, 97, 77, 1);
+    --chart-2: rgba(49, 162, 122, 1);
+    --chart-3: rgba(62, 100, 119, 1);
+    --chart-4: rgba(244, 198, 92, 1);
+    --chart-5: rgba(255, 167, 108, 1);
+  }
+
+  .dark {
+    --background: rgb(24, 28, 39, 1);
+    --foreground: rgba(244, 247, 255, 1);
+    --card: rgba(26, 32, 44, 1);
+    --card-foreground: rgba(244, 247, 255, 1);
+    --popover: rgba(10, 25, 61, 1);
+    --popover-foreground: rgba(244, 247, 255, 1);
+    --primary: rgba(244, 247, 255, 1);
+    --primary-foreground: rgba(25, 42, 76, 1);
+    --secondary: rgba(42, 49, 60, 1);
+    --secondary-foreground: rgba(244, 247, 255, 1);
+    --muted: rgba(42, 49, 60, 1);
+    --muted-foreground: rgba(139, 147, 153, 1);
+    --accent: rgba(42, 49, 60, 1);
+    --accent-foreground: rgba(244, 247, 255, 1);
+    --destructive: rgba(163, 30, 30, 1);
+    --destructive-foreground: rgba(244, 247, 255, 1);
+    --border: rgba(42, 49, 60, 1);
+    --input: rgba(42, 49, 60, 1);
+    --ring: rgba(177, 184, 203, 1);
+    --chart-1: rgba(51, 153, 255, 1);
+    --chart-2: rgba(51, 179, 163, 1);
+    --chart-3: rgba(204, 102, 51, 1);
+    --chart-4: rgba(163, 102, 204, 1);
+    --chart-5: rgba(219, 51, 109, 1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body {
+    @apply size-full;
+  }
+  body {
+    @apply bg-background text-foreground size-full;
+  }
 }
