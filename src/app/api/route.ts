@@ -39,12 +39,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ipMap.forEach((value, key) => {
-    //   if (moment(value).isBefore(moment().toDate())) {
-    //     ipMap.delete(key);
-    //   }
-    // });
-
     await prisma.iPTable.create({
       data: {
         ip: `${req.headers.get("X-Forwarded-For")}`,
@@ -54,6 +48,28 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Successfully done!" });
   } catch (error) {
-    return NextResponse.json({ message: "Internal server error!" });
+    return NextResponse.json(
+      { message: "Internal server error!" },
+      { status: 500 }
+    );
   }
 }
+
+// export async function DELETE() {
+//   try {
+//     await prisma.iPTable.deleteMany({
+//       where: {
+//         expireTime: {
+//           lt: moment().toDate().toISOString(),
+//         },
+//       },
+//     });
+
+//     return NextResponse.json({ message: "Successfully done!" });
+//   } catch (error) {
+//     return NextResponse.json(
+//       { message: "Internal server error!" },
+//       { status: 500 }
+//     );
+//   }
+// }
