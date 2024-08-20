@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useWriteContract } from "wagmi";
 import { privateKeyToAccount } from "viem/accounts";
 import { waitForTransactionReceipt } from "wagmi/actions";
@@ -25,6 +25,7 @@ import { TokenFaucetContractAddress } from "@/lib/contract";
 import { config } from "@/lib/config";
 import { Hex } from "viem";
 import { WriteContractsErrorType } from "viem/experimental";
+import { useMutation } from "@tanstack/react-query";
 
 export function FaucetCard() {
   const [text, setText] = useState<string>("");
@@ -33,11 +34,22 @@ export function FaucetCard() {
   const { writeContractAsync: sendTransaction, isPending: isSending } =
     useWriteContract();
 
+  const {
+    mutateAsync: checkEntryMutation,
+    isPending: isChecking,
+    ...rest
+  } = useMutation({
+    mutationFn: async () => await axios.post("/api"),
+  });
+
+  const isLoading = isChecking || isSending;
+
   const handleTransaction = async () => {
     try {
       const privateAcc = privateKeyToAccount(
         process.env.NEXT_PUBLIC_ADMIN_PRIVATE_KEY as Hex
       );
+
       const hash = await sendTransaction({
         abi: faucetABI,
         address: TokenFaucetContractAddress,
@@ -47,6 +59,7 @@ export function FaucetCard() {
       });
 
       await waitForTransactionReceipt(config, { hash });
+
       toast({
         title: "Success",
         description: "Successfully sent transaction!",
@@ -54,12 +67,12 @@ export function FaucetCard() {
       });
     } catch (e) {
       const error = e as WriteContractsErrorType;
-      console.error(error);
       toast({
         title: "Error",
         description: error.message,
         variant: "destructive",
       });
+      console.error(error);
     }
   };
 
@@ -74,20 +87,18 @@ export function FaucetCard() {
         });
       }
 
-      const res = await axios.post("/api");
-      console.log(res);
+      await checkEntryMutation();
 
-      if (res.status !== 200) {
-        return toast({
+      await handleTransaction();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast({
           title: "Error",
-          description: "",
+          description: `Please try after ${error.response?.data?.time}`,
           variant: "destructive",
         });
       }
-
-      // await handleTransaction();
-    } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -160,8 +171,8 @@ export function FaucetCard() {
               <Button
                 className="w-full"
                 type="submit"
-                disabled={isSending}
-                isLoading={isSending}
+                disabled={isLoading}
+                isLoading={isLoading}
               >
                 Get Tokens
               </Button>
