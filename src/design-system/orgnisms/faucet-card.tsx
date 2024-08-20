@@ -24,7 +24,6 @@ import { isWalletAddress } from "@/lib/utils";
 import { TokenFaucetContractAddress } from "@/lib/contract";
 import { config } from "@/lib/config";
 import { Hex } from "viem";
-import { WriteContractsErrorType } from "viem/experimental";
 import { useMutation } from "@tanstack/react-query";
 
 export function FaucetCard() {
@@ -34,13 +33,10 @@ export function FaucetCard() {
   const { writeContractAsync: sendTransaction, isPending: isSending } =
     useWriteContract();
 
-  const {
-    mutateAsync: checkEntryMutation,
-    isPending: isChecking,
-    ...rest
-  } = useMutation({
-    mutationFn: async () => await axios.post("/api"),
-  });
+  const { mutateAsync: checkEntryMutation, isPending: isChecking } =
+    useMutation({
+      mutationFn: async () => await axios.post("/api"),
+    });
 
   const isLoading = isChecking || isSending;
 
@@ -66,13 +62,12 @@ export function FaucetCard() {
         variant: "default",
       });
     } catch (e) {
-      const error = e as WriteContractsErrorType;
       toast({
         title: "Error",
         description: "Please try after some time",
         variant: "destructive",
       });
-      console.error(error);
+      console.error(e);
     }
   };
 
@@ -90,6 +85,7 @@ export function FaucetCard() {
       await checkEntryMutation();
 
       await handleTransaction();
+      setText("");
     } catch (error) {
       if (error instanceof AxiosError) {
         toast({

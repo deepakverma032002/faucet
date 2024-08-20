@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "yarn prisma:push && next build",
+    "build": "yarn prisma:push && yarn prisma:generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:push": "npx prisma db push --schema src/prisma/schema.prisma"
+    "prisma:push": "npx prisma db push --schema src/prisma/schema.prisma",
+    "prisma:generate": "npx prisma generate --schema src/prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",
